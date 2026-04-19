@@ -116,7 +116,7 @@
     <input type="text" id="gp" placeholder="e.g. 25 or 5.7"/>
   </div>
   <div class="row">
-    <input type="text" id="search" placeholder="Find cluster id (e.g. R.1.2)"/>
+    <input type="text" id="search" placeholder="Find cluster id (e.g. 1.1.2)"/>
   </div>
   <div class="row">
     <label><input type="checkbox" id="iso"/> Isolate selection (hide others)</label>
@@ -159,6 +159,9 @@ for (const t of TICKS) {
   axFrag.appendChild(txt);
 }
 gA.appendChild(axFrag);
+
+// Display names: "R.1.2" -> "1.1.2" (root shown as "1", all descendants prefixed).
+for (const d of DATA) { d.td = d.td === 'R' ? '1' : '1.' + d.td.slice(2); }
 
 // Build rect elements
 const byKey = new Map();
@@ -347,13 +350,25 @@ function applyFilters() {
   const minSize = +szEl.value;
   const maxDepth = +dpEl.value;
   const isoKeep = (isoEl.checked && pinned) ? lineage(pinned) : null;
+  const sliceMode = gpTargetY !== null;
   for (const r of gR.children) {
     const d = byKey.get(r.dataset.k);
     let hide = d.s < minSize || d.l > maxDepth;
-    if (!hide && gpTargetY !== null) hide = !(d.y <= gpTargetY && gpTargetY < d.y + d.h);
+    if (!hide && sliceMode) hide = !(d.y <= gpTargetY && gpTargetY < d.y + d.h);
     if (!hide && isoKeep) hide = !isoKeep.has(d.k);
     r.classList.toggle('hidden', hide);
+    if (!hide && sliceMode) {
+      // Stretch intersecting clusters to fill full height — this paints
+      // which cluster owns each SKU at the chosen grouping level.
+      r.setAttribute('y', 0);
+      r.setAttribute('height', H);
+    } else {
+      r.setAttribute('y', d.y);
+      r.setAttribute('height', d.h);
+    }
   }
+  // Hide labels in slice mode (their coords no longer match)
+  gL.style.display = sliceMode ? 'none' : '';
 }
 
 szEl.addEventListener('input', () => { szV.textContent = szEl.value; applyFilters(); });
