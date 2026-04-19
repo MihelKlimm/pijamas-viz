@@ -161,7 +161,11 @@ for (const t of TICKS) {
 gA.appendChild(axFrag);
 
 // Display names: "R.1.2" -> "1.1.2" (root shown as "1", all descendants prefixed).
-for (const d of DATA) { d.td = d.td === 'R' ? '1' : '1.' + d.td.slice(2); }
+// Root fill: override neutral grey with pure white so it stands out on dark bg.
+for (const d of DATA) {
+  d.td = d.td === 'R' ? '1' : '1.' + d.td.slice(2);
+  if (d.k === 'R') d.c = '#FFFFFF';
+}
 
 // Build rect elements
 const byKey = new Map();
