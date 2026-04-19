@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>Pijamas — Dendrogram Views</title>
+<style>
+  html,body { margin:0; min-height:100%;
+    background: radial-gradient(ellipse at top, #1a1f2b 0%, #0f1115 70%);
+    color:#e6e8ee;
+    font: 14px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 60px 24px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #8a93a6; margin-bottom: 40px; font-size: 13px; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card { background:#161a21; border:1px solid #262b36; border-radius:12px;
+    padding: 18px 20px; text-decoration:none; color:inherit;
+    transition: border-color .15s, transform .15s; display:block; }
+  .card:hover { border-color:#6fb3ff; transform: translateY(-2px); }
+  .card h2 { font-size:15px; margin:0 0 6px; }
+  .card p { margin:0; font-size:12px; color:#8a93a6; }
+  .tag { display:inline-block; font-size:10px; padding:2px 7px; border-radius:3px;
+    margin-right:6px; vertical-align:middle;
+    background:#1e2432; color:#8a93a6; border:1px solid #262b36; }
+  .tag.new { background:#164a2a; color:#7fe0a6; border-color:#215f3a; }
+  footer { margin-top: 40px; color:#5a6378; font-size:11px; }
+</style></head><body><main>
+  <h1>Pijamas — Dendrogram Views</h1>
+  <div class="sub">2,972 SKUs · 1,505 grouping levels · 5,423 clusters</div>
+  <div class="grid">
+    <a class="card" href="clusters.html">
+      <h2><span class="tag new">v2</span>Interactive cluster tiles</h2>
+      <p>Zoomable icicle view. Filters (min size, max depth, search), pan/zoom,
+         click to pin, double-click to focus, breadcrumb navigation.</p>
+    </a>
+    <a class="card" href="clusters_v1.html">
+      <h2><span class="tag">v1</span>Interactive tiles — first iteration</h2>
+      <p>Original cluster-tile layout. Kept for reference.</p>
+    </a>
+    <a class="card" href="clusters_mpl.svg">
+      <h2><span class="tag">SVG</span>Print-quality diagram</h2>
+      <p>Matplotlib-rendered icicle with clear cluster indents and size labels.
+         Vector — zoom infinitely without loss.</p>
+    </a>
+    <a class="card" href="clusters_mpl.png">
+      <h2><span class="tag">PNG</span>Print-quality diagram (raster)</h2>
+      <p>Same diagram as SVG, 150-DPI PNG. Good for slide decks.</p>
+    </a>
+    <a class="card" href="dendrogram.html">
+      <h2><span class="tag">heatmap</span>Per-cell pixel view</h2>
+      <p>Full 2972 × 1505 matrix as a single image (pan/zoom).
+         Every cell visible; no cluster structure overlaid.</p>
+    </a>
+    <a class="card" href="dendrogram.png">
+      <h2><span class="tag">PNG</span>Pixel view — download</h2>
+      <p>Same pixel heatmap as PNG.</p>
+    </a>
+  </div>
+  <footer>Generated from BigQuery · github.com/MihelKlimm/pijamas</footer>
+</main></body></html>

@@ -24,9 +24,8 @@
       radial-gradient(ellipse at 50% 0%, #1a1f2b 0%, #0f1115 60%); }
   #stage.drag { cursor:grabbing; }
   svg { display:block; }
-  svg g.rects rect { stroke:#0f1115; stroke-width:1.1;
+  svg g.rects rect { stroke:#0f1115; stroke-width:0.35;
     transition: opacity .12s, stroke .12s; }
-  svg g.rects rect.hidden { display:none; }
   svg g.rects rect.dim { opacity:0.18; }
   svg g.rects rect.hi { stroke:#ffffff; stroke-width:1.2; }
   svg text.lbl { font: 600 11px ui-sans-serif,system-ui,sans-serif;
@@ -50,20 +49,6 @@
   #info dt { color:var(--muted); }
   #info dd { margin:0; font-family: ui-monospace,monospace; color:var(--ink);
     word-break:break-all; }
-  #controls { position:absolute; top:68px; left:16px; width:260px;
-    background:rgba(22,26,33,.94); backdrop-filter:blur(8px);
-    border:1px solid var(--line); border-radius:10px; padding:12px 14px;
-    box-shadow:0 6px 24px rgba(0,0,0,.4); z-index:9; font-size:12px; }
-  #controls label { display:flex; justify-content:space-between;
-    color:var(--muted); margin-bottom:6px; }
-  #controls label b { color:var(--ink); font-family:ui-monospace,monospace;
-    font-weight:500; }
-  #controls input[type=range] { width:100%; accent-color:var(--accent); }
-  #controls .row { margin-bottom:10px; }
-  #controls .row:last-child { margin:0; }
-  #controls input[type=text] { width:100%; padding:6px 8px;
-    background:#0f1115; border:1px solid var(--line); color:var(--ink);
-    border-radius:5px; font-family:ui-monospace,monospace; font-size:12px; }
   #breadcrumb { position:absolute; bottom:14px; left:16px; right:16px;
     display:none; align-items:center; gap:6px; font-size:12px;
     background:rgba(22,26,33,.9); padding:8px 12px; border-radius:8px;
@@ -101,19 +86,6 @@
     <dt>Leaf range</dt><dd id="f-bu">—</dd>
     <dt>Color</dt><dd id="f-color">—</dd>
   </dl>
-</aside>
-<aside id="controls">
-  <div class="row">
-    <label>Min cluster size <b id="sz-v">1</b></label>
-    <input type="range" id="sz" min="1" max="500" value="1" step="1"/>
-  </div>
-  <div class="row">
-    <label>Max depth <b id="dp-v">all</b></label>
-    <input type="range" id="dp" min="1" max="50" value="50" step="1"/>
-  </div>
-  <div class="row">
-    <input type="text" id="search" placeholder="Find cluster id (e.g. R.1.2)"/>
-  </div>
 </aside>
 <nav id="breadcrumb"></nav>
 <script>
@@ -305,42 +277,6 @@ document.addEventListener('keydown', e => {
     pinned = null; highlight(null); showInfo(null); renderBreadcrumb(null);
     animateTo({x:-GUTTER, y:0, w:W+GUTTER, h:H}, 320);
   }
-});
-
-// Filters: min-size + max-depth + search
-const szEl = document.getElementById('sz'), szV = document.getElementById('sz-v');
-const dpEl = document.getElementById('dp'), dpV = document.getElementById('dp-v');
-const searchEl = document.getElementById('search');
-const maxLevel = Math.max(...DATA.map(d => d.l));
-dpEl.max = maxLevel;
-dpEl.value = maxLevel;
-dpV.textContent = 'all';
-
-function applyFilters() {
-  const minSize = +szEl.value;
-  const maxDepth = +dpEl.value;
-  for (const r of gR.children) {
-    const d = byKey.get(r.dataset.k);
-    const hide = d.s < minSize || d.l > maxDepth;
-    r.classList.toggle('hidden', hide);
-  }
-  for (const t of gL.children) {
-    // labels don't carry cluster key; cheap approach: hide labels whose coords
-    // correspond to a hidden cluster. Simpler: rebuild label visibility by
-    // size/level via stored data-k would require attaching dataset. For now,
-    // hide all labels if any filter active, show on reset.
-  }
-}
-szEl.addEventListener('input', () => { szV.textContent = szEl.value; applyFilters(); });
-dpEl.addEventListener('input', () => {
-  dpV.textContent = dpEl.value == maxLevel ? 'all' : dpEl.value;
-  applyFilters();
-});
-searchEl.addEventListener('input', () => {
-  const q = searchEl.value.trim();
-  if (!q) { highlight(null); return; }
-  const hit = DATA.find(d => d.td === q || d.td.startsWith(q));
-  if (hit) { pinned = hit.k; highlight(hit.k); showInfo(hit); renderBreadcrumb(hit.k); zoomTo(hit); }
 });
 
 function renderBreadcrumb(k) {
